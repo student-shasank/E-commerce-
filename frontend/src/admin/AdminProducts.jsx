@@ -1,19 +1,22 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const AdminProducts = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useSelector((state) => state.auth); // ✅ Redux
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    if (!user || user.role !== 'admin') return;
+
     const fetchProducts = async () => {
       const res = await fetch('/api/products');
       const data = await res.json();
       setProducts(Array.isArray(data) ? data : []);
     };
+
     fetchProducts();
-  }, []);
+  }, [user]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you strictly sure you want to delete this?')) {
@@ -21,6 +24,7 @@ const AdminProducts = () => {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${user.token}` }
       });
+
       if (res.ok) {
         setProducts(products.filter(p => p._id !== id));
       }
@@ -46,12 +50,13 @@ const AdminProducts = () => {
               <th style={thStyle}>ACTIONS</th>
             </tr>
           </thead>
+
           <tbody>
             {products.map(product => (
               <tr key={product._id} style={rowStyle}>
                 <td style={tdStyle}>{product._id.substring(0, 8)}...</td>
                 <td style={tdStyle}>{product.name}</td>
-                <td style={tdStyle}>₹{product.price.toFixed(2)}</td>
+                <td style={tdStyle}>₹{product.price?.toFixed(2)}</td>
                 <td style={tdStyle}>{product.category}</td>
                 <td style={tdStyle}>{product.stock}</td>
                 <td style={tdStyle}>

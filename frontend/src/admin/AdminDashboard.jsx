@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useSelector((state) => state.auth); // ✅ Redux
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
 
@@ -31,6 +31,7 @@ const AdminDashboard = () => {
         console.error(error);
       }
     };
+
     fetchStats();
   }, [user, navigate]);
 
@@ -59,7 +60,10 @@ const AdminDashboard = () => {
         <img src="/ShopNestLogo.png" alt="Logo" style={{ height: '40px', width: '40px', borderRadius: '8px', objectFit: 'cover', filter: 'drop-shadow(0 0px 10px rgba(249, 115, 22, 0.3))' }} />
         <h2 style={{ margin: 0 }}>Admin Dashboard</h2>
       </div>
-      <p style={{ color: '#a1a1aa', marginBottom: '30px', fontSize: '1.1rem' }}>Welcome back, <span style={{color: '#fff'}}>{user?.name}</span></p>
+
+      <p style={{ color: '#a1a1aa', marginBottom: '30px', fontSize: '1.1rem' }}>
+        Welcome back, <span style={{color: '#fff'}}>{user?.name}</span>
+      </p>
       
       {stats ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
@@ -77,11 +81,13 @@ const AdminDashboard = () => {
           </div>
           <div style={cardStyle}>
             <h4 style={{ color: '#a1a1aa', fontSize: '1rem' }}>Total Revenue</h4>
-            <div style={numberStyle}>₹{stats.totalRevenue.toFixed(2)}</div>
+            <div style={numberStyle}>₹{stats.totalRevenue?.toFixed(2)}</div>
           </div>
         </div>
       ) : (
-        <div style={{ textAlign: 'center', margin: '50px 0', color: '#f97316' }}>Loading metrics...</div>
+        <div style={{ textAlign: 'center', margin: '50px 0', color: '#f97316' }}>
+          Loading metrics...
+        </div>
       )}
 
       <div style={{ marginTop: '40px', padding: '30px', background: '#18181b', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
