@@ -1,9 +1,9 @@
-const nodemailer = require('nodemailer');
+import nodemailer from "nodemailer";
 
 const sendEmail = async ({ email, subject, message }) => {
   try {
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_PASS, // App Password mapping
@@ -18,10 +18,11 @@ const sendEmail = async ({ email, subject, message }) => {
     };
 
     await transporter.sendMail(mailOptions);
+
     console.log(`Email successfully sent to ${email}`);
   } catch (error) {
     console.error(`Failed to send email to ${email}: ${error.message}`);
   }
 };
 
-module.exports = sendEmail;
+export default sendEmail;
