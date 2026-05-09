@@ -10,6 +10,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import collectionRoutes from "./routes/collectionRoutes.js";
+import favRoutes from "./routes/favoritesRoutes.js";
 
 import { fileURLToPath } from "url";
 
@@ -38,6 +39,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/collections", collectionRoutes);
+app.use("/api/favorites", favRoutes);
 
 // Serve frontend in production
 if (process.env.NODE_ENV === "production") {
