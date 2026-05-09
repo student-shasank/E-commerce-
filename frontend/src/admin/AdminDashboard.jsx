@@ -97,6 +97,9 @@ const AdminDashboard = () => {
           <button className="btn" onClick={() => navigate('/admin/products')} style={{ background: '#3f3f46' }}>📦 Manage Products</button>
           <button className="btn" onClick={() => navigate('/admin/orders')} style={{ background: '#3f3f46' }}>🚚 Manage Orders</button>
           <button className="btn" onClick={() => navigate('/admin/users')} style={{ background: '#3f3f46' }}>👥 Users Directory</button>
+          <button className="btn" onClick={() => navigate('/admin/collection')} style={{ background: '#3f3f46' }}>
+  🗂️ Manage Collections
+</button>
         </div>
       </div>
     </div>
