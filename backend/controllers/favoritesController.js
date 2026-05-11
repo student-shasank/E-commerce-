@@ -1,18 +1,23 @@
+// controllers/favoritesController.js
+
 import userModel from "../models/User.js";
 
-const addToFavorites = async (req, res) => {
+// ✅ ADD TO FAVORITES
+export const addToFavorites = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
+    const userId = req.user.id; // 🔒 secure (JWT se aayega)
+    const { productId } = req.body;
 
     const user = await userModel.findById(userId);
 
     if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const alreadyFavorite = user.favorites.includes(productId);
+    // ✅ FIX ObjectId compare
+    const alreadyFavorite = user.favorites.some(
+      (id) => id.toString() === productId
+    );
 
     if (alreadyFavorite) {
       return res.status(400).json({
@@ -21,7 +26,6 @@ const addToFavorites = async (req, res) => {
     }
 
     user.favorites.push(productId);
-
     await user.save();
 
     res.status(200).json({
@@ -30,25 +34,26 @@ const addToFavorites = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
-const removeFromFavorites = async (req, res) => {
+
+// ✅ REMOVE FROM FAVORITES
+export const removeFromFavorites = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
+    const userId = req.user.id;
+    const { productId } = req.body;
 
     const user = await userModel.findById(userId);
 
     if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const productExists = user.favorites.includes(productId);
+    const productExists = user.favorites.some(
+      (id) => id.toString() === productId
+    );
 
     if (!productExists) {
       return res.status(400).json({
@@ -68,24 +73,22 @@ const removeFromFavorites = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
-const getFavorites = async (req, res) => {
+
+// ✅ GET FAVORITES
+export const getFavorites = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.user.id;
 
     const user = await userModel
       .findById(userId)
-      .populate("favorites");
+      .populate("favorites", "name price imageUrl"); // 🔥 optimized
 
     if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.status(200).json({
@@ -93,14 +96,6 @@ const getFavorites = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
-};
-
-export {
-  addToFavorites,
-  removeFromFavorites,
-  getFavorites,
 };

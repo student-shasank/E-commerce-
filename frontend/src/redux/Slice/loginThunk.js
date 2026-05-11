@@ -42,10 +42,8 @@ export const loginUser =
         }
 
         // SAVE USER
-        localStorage.setItem(
-          "user",
-          JSON.stringify(data)
-        );
+       // save properly
+localStorage.setItem("userInfo", JSON.stringify(data));
 
         return data;
 
