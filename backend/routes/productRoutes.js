@@ -1,13 +1,36 @@
-const express = require('express');
-const { getProducts, getProductById, createProduct, updateProduct, deleteProduct } = require('../controllers/productController');
-const { protect } = require('../middleware/authMiddleware');
-const { admin } = require('../middleware/adminMiddleware');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+import express from "express";
+import {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  getProductsByCollection,
+  createProductWithoutCloudinary,
+} from "../controllers/productController.js";
+
+import { protect } from "../middleware/authMiddleware.js";
+import { admin } from "../middleware/adminMiddleware.js";
+
+import multer from "multer";
+
+const upload = multer({ dest: "uploads/" });
 
 const router = express.Router();
 
-router.route('/').get(getProducts).post(protect, admin, upload.single('image'), createProduct);
-router.route('/:id').get(getProductById).put(protect, admin, upload.single('image'), updateProduct).delete(protect, admin, deleteProduct);
+router
+  .route("/")
+  .get(getProducts)
+  .post(protect, admin, upload.single("image"), createProduct);
 
-module.exports = router;
+router
+  .route("/:id")
+  .get(getProductById)
+  .put(protect, admin, upload.single("image"), updateProduct)
+  .delete(protect, admin, deleteProduct);
+
+router.route("/CreateProductWithoutCloudinary").post(protect, admin, createProductWithoutCloudinary);
+
+router.route("/collection/:collection").get(getProductsByCollection);
+
+export default router;

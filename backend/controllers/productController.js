@@ -1,5 +1,5 @@
-const Product = require('../models/Product');
-const cloudinary = require('../config/cloudinary');
+import Product from "../models/Product.js";
+import cloudinary from "../config/cloudinary.js";
 
 const getProducts = async (req, res) => {
   try {
@@ -13,10 +13,11 @@ const getProducts = async (req, res) => {
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
+
     if (product) {
       res.json(product);
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(404).json({ message: "Product not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -26,15 +27,26 @@ const getProductById = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
-    let imageUrl = '';
+
+    let imageUrl = "";
+
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path);
       imageUrl = result.secure_url;
     }
+
     const product = new Product({
-      name, description, price, category, stock, imageUrl
+      name,
+      description,
+      price,
+      category,
+      collection,
+      stock,
+      imageUrl,
     });
+
     const createdProduct = await product.save();
+
     res.status(201).json(createdProduct);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -44,7 +56,9 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
+
     const product = await Product.findById(req.params.id);
+
     if (product) {
       product.name = name || product.name;
       product.description = description || product.description;
@@ -56,10 +70,12 @@ const updateProduct = async (req, res) => {
         const result = await cloudinary.uploader.upload(req.file.path);
         product.imageUrl = result.secure_url;
       }
+
       const updatedProduct = await product.save();
+
       res.json(updatedProduct);
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(404).json({ message: "Product not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -69,15 +85,71 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
+
     if (product) {
       await product.deleteOne();
-      res.json({ message: 'Product removed' });
+      res.json({ message: "Product removed" });
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(404).json({ message: "Product not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = { getProducts, getProductById, createProduct, updateProduct, deleteProduct };
+
+const getProductsByCollection = async (req, res) => {
+  try {
+    const collection = req.params.collection;
+    const products = await Product.find({ collection: collection });
+
+    if (products.length > 0) {
+      res.json(products);
+    } 
+    else {
+      res.status(404).json({ message: "No products found in this collection" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+
+const createProductWithoutCloudinary = async (req, res) => {
+  try {
+    const { name, description, price, category, collection, stock, imageUrl } = req.body;
+
+    // let imageUrl = "";
+
+    // if (req.file) {
+    //   const result = await cloudinary.uploader.upload(req.file.path);
+    //   imageUrl = result.secure_url;
+    // }
+
+    const product = new Product({
+      name,
+      description,
+      price,
+      category,
+      collection,
+      stock,
+      imageUrl,
+    });
+
+    const createdProduct = await product.save();
+
+    res.status(201).json(createdProduct);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export {
+  getProducts,
+  getProductById,
+  getProductsByCollection,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  createProductWithoutCloudinary,
+};

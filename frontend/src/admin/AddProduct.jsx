@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const AddProduct = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useSelector((state) => state.auth); // ✅ Redux
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -82,7 +82,9 @@ const AddProduct = () => {
         />
         
         <div style={{ padding: '15px', border: '1px dashed #f97316', borderRadius: '8px' }}>
-          <label style={{ display: 'block', marginBottom: '10px', color: '#a1a1aa' }}>Upload Product Image (Cloudinary)</label>
+          <label style={{ display: 'block', marginBottom: '10px', color: '#a1a1aa' }}>
+            Upload Product Image (Cloudinary)
+          </label>
           <input 
             type="file" accept="image/*" required 
             onChange={(e) => setImage(e.target.files[0])} 

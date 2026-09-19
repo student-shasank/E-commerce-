@@ -1,15 +1,18 @@
-const Order = require('../models/Order');
-const Product = require('../models/Product');
-const User = require('../models/User');
+import Order from "../models/Order.js";
+import Product from "../models/Product.js";
+import User from "../models/User.js";
 
 const getAdminStats = async (req, res) => {
   try {
     const totalOrders = await Order.countDocuments({});
     const totalProducts = await Product.countDocuments({});
-    const totalUsers = await User.countDocuments({ role: 'user' });
+    const totalUsers = await User.countDocuments({ role: "user" });
 
     const orders = await Order.find({});
-    const totalRevenue = orders.reduce((acc, item) => acc + item.totalAmount, 0);
+    const totalRevenue = orders.reduce(
+      (acc, item) => acc + item.totalAmount,
+      0
+    );
 
     res.json({ totalOrders, totalProducts, totalUsers, totalRevenue });
   } catch (error) {
@@ -17,4 +20,4 @@ const getAdminStats = async (req, res) => {
   }
 };
 
-module.exports = { getAdminStats };
+export { getAdminStats };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -20,8 +20,21 @@ import AdminProducts from './admin/AdminProducts';
 import EditProduct from './admin/EditProduct';
 import AdminOrders from './admin/AdminOrders';
 import AdminUsers from './admin/AdminUsers';
+import AdminCollection from './admin/AdminCollection';
+import Wishlist from './pages/Wishlist';
+import { useDispatch } from "react-redux";
+import { getFavorites } from "./redux/Slice/Favoritesslice";
 
 function App() {
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+    if (userInfo?.token) {
+      dispatch(getFavorites());
+    }
+  }, [dispatch]);
   return (
     <Router>
       <Navbar />
@@ -45,6 +58,8 @@ function App() {
           <Route path="/admin/edit-product/:id" element={<EditProduct />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/collection" element={<AdminCollection />} />
+          <Route path="/wishlist" element={<Wishlist/>} />
         </Routes>
       </div>
       <Footer />

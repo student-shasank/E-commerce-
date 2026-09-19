@@ -149,7 +149,38 @@
   font-size: 1.1rem;
   margin-bottom: 30px;
 }
+/* product card */
+.product-card {
+  position: relative;
+  overflow: hidden;
+}
 
+/* ❤️ button */
+.wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  background: white;
+  border: none;
+  font-size: 18px;
+  border-radius: 50%;
+  padding: 6px 8px;
+
+  cursor: pointer;
+
+  opacity: 0;              /* hidden by default */
+  transform: scale(0.8);   /* small initially */
+  transition: all 0.3s ease;
+
+  z-index: 10;             /* 🔥 important */
+}
+
+/* ✅ SHOW ON HOVER */
+.product-card:hover .wishlist-btn {
+  opacity: 1;
+  transform: scale(1);
+}
 @media (max-width: 900px) {
   .product-detail {
     grid-template-columns: 1fr;
